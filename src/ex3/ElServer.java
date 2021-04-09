@@ -9,6 +9,9 @@ import java.nio.charset.StandardCharsets;
 
 public class ElServer {
     DatagramSocket socket;
+    private int elNumero = (int) (Math.random()*100);
+    private int conexionNumero = 0;
+    private String nombre = "usuario";
 
     public void init(int port) throws SocketException {
         socket = new DatagramSocket(port);
@@ -45,9 +48,18 @@ public class ElServer {
 
     private byte[] processData(byte[] data, int length) {
         String mensaje;
-        mensaje = new String(data, StandardCharsets.UTF_8);
+        String resp = null;
+        mensaje = new String(data, 0,length);
+
+        if (conexionNumero == 0){
+            nombre = mensaje;
+            conexionNumero++;
+        }
+
+        resp = "<"+nombre+"<"+mensaje+">"+">";
+
         System.out.println(mensaje);
-        String resp = "RESPUESTA DEL SERVER.";
+
         byte[] respuesta = resp.getBytes(StandardCharsets.UTF_8);
 
     return respuesta;
