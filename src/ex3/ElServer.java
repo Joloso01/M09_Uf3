@@ -9,9 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ElServer {
     DatagramSocket socket;
-    private int elNumero = (int) (Math.random()*100);
-    private int conexionNumero = 0;
-    private String nombre = "usuario";
+    private int elNumero = (int) (Math.random()*100)+1;
 
     public void init(int port) throws SocketException {
         socket = new DatagramSocket(port);
@@ -19,7 +17,7 @@ public class ElServer {
     }
 
     public void runServer() throws IOException {
-        byte [] receivingData = new byte[1024];
+        byte [] receivingData = new byte[4];
         byte [] sendingData;
         InetAddress clientIP;
         int clientPort;
@@ -28,7 +26,7 @@ public class ElServer {
         while(true){
 
 //creació del paquet per rebre les dades
-            DatagramPacket packet = new DatagramPacket(receivingData, 1024);
+            DatagramPacket packet = new DatagramPacket(receivingData, 4);
 //espera de les dades
             socket.receive(packet);
 //processament de les dades rebudes i obtenció de la resposta
@@ -50,19 +48,30 @@ public class ElServer {
         String mensaje;
         String resp = null;
         mensaje = new String(data, 0,length);
+        int numeroMensaje = 0;
 
-        if (conexionNumero == 0){
-            nombre = mensaje;
-            conexionNumero++;
+        try{
+            numeroMensaje = Integer.parseInt(mensaje);
+        }catch (Exception e){
+            resp = "eso no es un numero >:(";
+             return resp.getBytes(StandardCharsets.UTF_8);
+        }
+        if(numeroMensaje > elNumero){
+            resp = "< el numero es mas pequeño>";
+        }else if (numeroMensaje  < elNumero){
+            resp = "< el numero es mas GRANDE>";
+
+        }else if (Integer.parseInt(mensaje) == elNumero){
+            resp = "< Enhorabuena el numero secreto era: "+elNumero+">";
+        } else {
+            resp = "adeu";
         }
 
-        resp = "<"+nombre+"<"+mensaje+">"+">";
+
 
         System.out.println(mensaje);
 
-        byte[] respuesta = resp.getBytes(StandardCharsets.UTF_8);
-
-    return respuesta;
+        return resp.getBytes(StandardCharsets.UTF_8);
     }
 
 }
