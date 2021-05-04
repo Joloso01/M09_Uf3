@@ -2,6 +2,7 @@ package ex6.UDP;
 
 import java.io.IOException;
 import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,25 +43,25 @@ public class ClientVelocimetre {
     }
 
     public void runClient() throws IOException {
-        byte [] receivedData = new byte[4];
+        byte [] receivedData = new byte[1024];
         //Bucle
         while(true) {
             multisocket.joinGroup(groupMulticast,netIf);
             while (continueRunning) {
-                DatagramPacket mpacket = new DatagramPacket(receivedData, 4);
+                DatagramPacket mpacket = new DatagramPacket(receivedData, 1024);
                 multisocket.receive(mpacket);
-                String received = new String(mpacket.getData(), 0, mpacket.getLength());
-                System.out.println(received);
-//                velocitats.add(Integer.parseInt(data));
-//                System.out.println("Velocitat: "+data);
-//                if (velocitats.size() %5 == 0){
-//                    int total = 0;
-//                    for (Integer integer:velocitats){
-//                        total = total+integer;
-//                    }
-//                    int media = total/velocitats.size();
-//                    System.out.println("la mitja es: "+media);
-//                }
+                int numero = ByteBuffer.wrap(mpacket.getData()).getInt();
+                velocitats.add(numero);
+                System.out.println("Velocitat: "+numero);
+                if (velocitats.size() %5 == 0){
+                    int total = 0;
+                    for (Integer integer:velocitats){
+                        total = total+integer;
+                    }
+                    int media = total/velocitats.size();
+                    velocitats.clear();
+                    System.out.println("la mitja es: "+media);
+                }
             }
             multisocket.leaveGroup(groupMulticast,netIf);
             multisocket.close();
