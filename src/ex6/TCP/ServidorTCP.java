@@ -12,22 +12,27 @@ public class ServidorTCP {
      * */
 
     int port;
-    Llista ns;
+//    Llista llista;
+//    List<Integer> numeros = new ArrayList<>();
 
     public ServidorTCP(int port ) {
         this.port = port;
+//        for (int i = 0; i < 10; i++) {
+//            numeros.add((int) (Math.random()*100));
+//        }
+//        llista = new Llista("llista: 0",numeros);
     }
 
     public void listen() {
-        ServerSocket serverSocket = null;
-        Socket clientSocket = null;
+        ServerSocket serverSocket;
+        Socket clientSocket;
 
         try {
             serverSocket = new ServerSocket(port);
             while(true) { //esperar connexió del client i llançar thread
                 clientSocket = serverSocket.accept();
                 //Llançar Thread per establir la comunicació
-                ThreadServidor FilServidor = new ThreadServidor(clientSocket, ns);
+                ThreadServidor FilServidor = new ThreadServidor(clientSocket);
                 Thread client = new Thread(FilServidor);
                 client.start();
             }
@@ -37,13 +42,6 @@ public class ServidorTCP {
     }
 
     public static void main(String[] args) {
-		/*if (args.length != 1) {
-            System.err.println("Usage: java SrvTcpAdivina <port number>");
-            System.exit(1);
-        }*/
-
-
-        //int port = Integer.parseInt(args[0]);
         ServidorTCP srv = new ServidorTCP(5558);
         srv.listen();
 
