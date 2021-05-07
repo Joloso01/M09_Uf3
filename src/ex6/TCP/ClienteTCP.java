@@ -35,7 +35,8 @@ public class ClienteTCP extends Thread{
              oos = new ObjectOutputStream(socket.getOutputStream());
             //el client atén el port fins que decideix finalitzar
             while(continueConnected){
-                oos.writeObject(getRequest(serverData));
+                Llista llista = getRequest(serverData);
+                oos.writeObject(llista);
                 oos.flush();
                 serverData = (Llista) ois.readObject();
                 //processament de les dades rebudes i obtenció d'una nova petició
@@ -60,6 +61,8 @@ public class ClienteTCP extends Thread{
             for(Integer i: serverD.getNumberList()){
                 System.out.println(i);
             }
+        }
+
 
             List<Integer> numeros = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
@@ -68,9 +71,6 @@ public class ClienteTCP extends Thread{
             numeroLista += 1;
             System.out.println("enviada la lista: "+numeroLista);
             return new Llista("listaDeOrdenada"+numeroLista,numeros);
-        }
-        else return null;
-
     }
 
     public boolean mustFinish(String dades) {
