@@ -8,18 +8,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ThreadServidor implements Runnable {
-    /* Thread que gestiona la comunicació de SrvTcPAdivina.java i un cllient ClientTcpAdivina.java */
 
     Socket clientSocket;
     ObjectInputStream ois;
     ObjectOutputStream oos;
-    Llista llistaEntrant, llistaSortint;
+    Llista llistaEntrant;
     boolean acabat;
-    Llista llista;
 
     public ThreadServidor(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
-//        llista = ns;
         System.out.println(clientSocket.getInetAddress());
         acabat = false;
         oos = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -39,8 +36,6 @@ public class ThreadServidor implements Runnable {
                 llistaEntrant = generaResposta(llistaEntrant);
                 oos.writeObject(llistaEntrant);
                 oos.flush();
-
-
             }
         }catch(IOException | ClassNotFoundException e){
             System.out.println(e.getLocalizedMessage());
@@ -60,7 +55,5 @@ public class ThreadServidor implements Runnable {
             llista.setNumberList(numerosOrdenados);
             return llista;
         }else return null;
-
     }
-
 }

@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ClienteTCP extends Thread{
-    /* CLient TCP que ha endevinar un número pensat per SrvTcpAdivina.java */
 
     String hostname;
     int port;
@@ -33,15 +32,11 @@ public class ClienteTCP extends Thread{
             socket = new Socket(InetAddress.getByName(hostname), port);
              ois = new ObjectInputStream(socket.getInputStream());
              oos = new ObjectOutputStream(socket.getOutputStream());
-            //el client atén el port fins que decideix finalitzar
             while(continueConnected){
                 Llista llista = getRequest(serverData);
                 oos.writeObject(llista);
                 oos.flush();
                 serverData = (Llista) ois.readObject();
-                //processament de les dades rebudes i obtenció d'una nova petició
-                //enviament el número i els intents
-
             }
 
             close(socket);
@@ -52,7 +47,6 @@ public class ClienteTCP extends Thread{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
     }
 
     public Llista getRequest(Llista serverD) {
@@ -70,20 +64,12 @@ public class ClienteTCP extends Thread{
             }
             numeroLista += 1;
             System.out.println("enviada la lista: "+numeroLista);
-            return new Llista("listaDeOrdenada"+numeroLista,numeros);
-    }
-
-    public boolean mustFinish(String dades) {
-        if (dades.equals("exit")) return false;
-        return true;
-
+            return new Llista("listaOrdenada"+numeroLista,numeros);
     }
 
     private void close(Socket socket){
-        //si falla el tancament no podem fer gaire cosa, només enregistrar
-        //el problema
+
         try {
-            //tancament de tots els recursos
             if(socket!=null && !socket.isClosed()){
                 if(!socket.isInputShutdown()){
                     socket.shutdownInput();
@@ -94,7 +80,6 @@ public class ClienteTCP extends Thread{
                 socket.close();
             }
         } catch (IOException ex) {
-            //enregistrem l'error amb un objecte Logger
             Logger.getLogger(ClienteTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
